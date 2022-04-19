@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="NewFolderNameGenerator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NewFolderNameGenerator_jar</output-path>
+    <root id="archive" name="NewFolderNameGenerator.jar">
+      <element id="module-output" name="NewFolderNameGenerator" />
+    </root>
+  </artifact>
+</component>

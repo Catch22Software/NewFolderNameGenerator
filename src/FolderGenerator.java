@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 public class FolderGenerator {
 
 
-    static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy");
+    static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy"); // change this for
+    // different date formats for the folders
     static String userDirectory = System.getProperty("user.dir");
     static File directoryPath = new File(userDirectory);
     static List<String> contents1 = Arrays.stream(Objects.requireNonNull(directoryPath
@@ -27,7 +28,7 @@ public class FolderGenerator {
                 : String.valueOf(LocalDate.now().getMonthValue());
             while(true) {
                 String response = JOptionPane.showInputDialog(JOptionPane.getRootFrame(),"Please use the numerical " +
-                        "representation of the month\n, i.e. February = 2 ."
+                        "representation\n of the month, i.e. February = 2 ."
                         ,"From what Month would you like to start?",JOptionPane.QUESTION_MESSAGE);
                 if (response == null || response.isBlank() || response.isEmpty()) {
                     makeFoldersOlder(Integer.parseInt(currentMonth));
