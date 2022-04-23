@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class FolderGenerator {
 
 
-    static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yy"); // change this for
+    static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy"); // change this for
     // different date formats for the folders
     static String userDirectory = System.getProperty("user.dir");
     static File directoryPath = new File(userDirectory);
@@ -26,34 +26,55 @@ public class FolderGenerator {
             String currentMonth = (LocalDate.now().getMonthValue() < 10)
                 ? "0"+ LocalDate.now().getMonthValue()
                 : String.valueOf(LocalDate.now().getMonthValue());
+            String currentYear = String.valueOf(LocalDate.now().getYear());
             while(true) {
-                String response = JOptionPane.showInputDialog(JOptionPane.getRootFrame(),"Please use the numerical " +
-                        "representation\n of the month, i.e. February = 2 ."
-                        ,"From what Month would you like to start?",JOptionPane.QUESTION_MESSAGE);
-                if (response == null || response.isBlank() || response.isEmpty()) {
-                    makeFoldersOlder(Integer.parseInt(currentMonth));
-                    break;
-                }
-                else if(response.length() == 1 && Character.isDigit(response.charAt(0))){
-                    if(Integer.parseInt(response) < 13 && Integer.parseInt(response) > 0){
-                        makeFoldersOlder(Integer.parseInt(response));
+                JOptionPane.showMessageDialog(null
+                        , "Welcome to my program!\nLeave answer blank for current month/year.");
+                String yearResponse;
+
+                try{
+                    do{
+                        yearResponse = JOptionPane.showInputDialog(null
+                                ,"Please enter the four digit year.");
+                        if(yearResponse == null)
+                            System.exit(0);
+                    }while((!(yearResponse.isBlank()) || !(yearResponse.isEmpty()))
+                            && (Integer.parseInt(yearResponse) < 1900 || Integer.parseInt(yearResponse) > LocalDate.now().getYear()));
+                    String monthResponse;
+                    do{
+                        monthResponse = JOptionPane.showInputDialog(null,"Please use the numerical " +
+                                        "representation\n of the month, i.e. February = 2 ."
+                                ,"From what Month would you like to start?",JOptionPane.QUESTION_MESSAGE);
+                        if(monthResponse == null)
+                            System.exit(0);
+                    }while ((!(monthResponse.isBlank()) || !(monthResponse.isEmpty()))
+                            && (Integer.parseInt(monthResponse) < 1 || Integer.parseInt(monthResponse) > 12));
+                    int month = (monthResponse.isBlank() || monthResponse.isEmpty())
+                            ? Integer.parseInt(currentMonth) : Integer.parseInt(monthResponse);
+                    int year = (yearResponse.isBlank() || yearResponse.isEmpty())
+                            ? Integer.parseInt(currentYear) : Integer.parseInt(yearResponse);
+                    int confirm = JOptionPane.showConfirmDialog(null
+                            , "You chose to start with: "+Month.of(month)+"\nof the year: "+year+"?");
+                    if(confirm == 0){
+                        makeFoldersOlder(month,year);
+                        JOptionPane.showMessageDialog(null,"It has been completed.");
                         break;
                     }
-                }
-                else if(response.length() == 2 && ((Character.isDigit(response.charAt(0))) && (Character.isDigit(response.charAt(1))))){
-                    makeFoldersOlder(Integer.parseInt(response));
-                    break;
-                }
-                else {
-                    JOptionPane.showMessageDialog(JOptionPane.getRootFrame()
-                            ,"NOPE!!! Please reread the directions!!"
-                            ,"ERROR!!!!"
-                            , JOptionPane.WARNING_MESSAGE);
+                    else if(confirm == 1){
+                        JOptionPane.showMessageDialog(null,"Please try your selection again." +
+                                "\n Remember to use numbers only.");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,"Thank you");
+                        System.exit(0);
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null,"You have to use numbers only please!");
                 }
             }
         }
-        private static void makeFoldersOlder(int month){
-            List<LocalDate> queryMonthDates = ((LocalDate.of(LocalDate.now().getYear()
+        private static void makeFoldersOlder(int month, int year){
+            List<LocalDate> queryMonthDates = ((LocalDate.of(year
                     , Month.of(month), 1))
                     .datesUntil(LocalDate.now().plusDays(1)))
                     .toList();
@@ -62,9 +83,9 @@ public class FolderGenerator {
                     .map(dateTimeFormatter::format)
                     .collect(Collectors.toList());
             formattedMonthDatesQueried.removeAll(contents);
-            formattedMonthDatesQueried.stream().map(date -> {
-                File file = new File(userDirectory+"/"+date);
+            new ArrayList<>(formattedMonthDatesQueried.stream().map(date -> {
+                File file = new File(userDirectory + "/" + date);
                 return file.mkdir();
-            }).toList();
+            }).toList()); // this creates the folders
         }
     }
